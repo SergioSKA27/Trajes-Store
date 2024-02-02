@@ -38,6 +38,8 @@ with elements('header'):
               'letterSpacing': '.3rem',
               'color': 'inherit',
               'textDecoration': 'none',
+              'margin': '10px',
+              'fontSize': '3vw'
             })
     with mui.Box(sx={'display': 'flex', 'flexDirection': 'row', 'justifyContent': 'flex-end', 'alignItems': 'right'}):
         with mui.ButtonGroup(variant="text", aria_label="loading button group",sx={'display': 'flex'}):
@@ -47,8 +49,8 @@ with elements('header'):
 
     with mui.Paper(sx={'display': 'flex', 'flexDirection': 'column','margin': '10px' , 'backgroundColor': 'secondary'},variant='elevation'):
         with mui.Box(sx={'display': 'flex', 'flexDirection': 'row','margin': '5px'}):
-            mui.icon.LocalOffer(color='primary',sx={'fontSize': '2vw'})
-            mui.Typography('Productos',variant='h6',sx={'margin': '5px','fontSize': '2.5vw','fontFamily': 'Monospace','fontWeight': 700,'letterSpacing': '.3rem','color': 'inherit','textDecoration': 'none'})
+            mui.icon.LocalOffer(color='primary',sx={'fontSize': '3vw'})
+            mui.Typography('Productos',variant='h6',sx={'margin': '5px','fontSize': '3.5vw','fontFamily': 'Monospace','fontWeight': 700,'letterSpacing': '.3rem','color': 'inherit','textDecoration': 'none'})
             mui.Divider()
         with mui.Box(sx={'display': 'flex', 'flexDirection': 'row',}):
             mui.Button(mui.icon.Search(),mui.Typography('Buscar',variant='caption',sx={'margin': '10px','fontSize': '2vw'}),color='secondary',onClick=handle_search)
