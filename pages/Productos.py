@@ -45,12 +45,17 @@ with elements('header'):
             mui.Button(mui.icon.LocalOffer(),mui.Typography('Productos',variant='caption',sx={'margin': '2px'}),color='primary')
             mui.Button(mui.icon.LocalAtm(),mui.Typography('Ventas',variant='caption',sx={'margin': '2px'}),color='primary')
 
-    with mui.Paper(sx={'padding': '20px', 'margin': '20px', 'display': 'flex', 'flexDirection': 'row',}):
-        mui.icon.LocalOffer()
-        mui.Typography('Productos',variant='h6',sx={'margin': '5px','fontSize': '3vw',})
-        mui.Button(mui.icon.Search(),mui.Typography('Buscar',variant='caption',sx={'margin': '10px','fontSize': '2vw'}),color='secondary',onClick=handle_search)
-        mui.Button(mui.icon.Add(),mui.Typography('Agregar',variant='caption',sx={'margin': '10px','fontSize': '2vw'}),color='secondary',onClick=handle_add)
-        mui.Button(mui.icon.DeleteForever(),mui.Typography('Eliminar',variant='caption',sx={'margin': '10px','fontSize': '2vw'}),color='secondary',onClick=handle_delete)
+    with mui.Paper(sx={'display': 'flex', 'flexDirection': 'column','margin': '10px' , 'backgroundColor': 'secondary'},variant='elevation'):
+        with mui.Box(sx={'display': 'flex', 'flexDirection': 'row','margin': '5px'}):
+            mui.icon.LocalOffer(color='primary',sx={'fontSize': '2vw'})
+            mui.Typography('Productos',variant='h6',sx={'margin': '5px','fontSize': '2.5vw','fontFamily': 'Monospace','fontWeight': 700,'letterSpacing': '.3rem','color': 'inherit','textDecoration': 'none'})
+            mui.Divider()
+        with mui.Box(sx={'display': 'flex', 'flexDirection': 'row',}):
+            mui.Button(mui.icon.Search(),mui.Typography('Buscar',variant='caption',sx={'margin': '10px','fontSize': '2vw'}),color='secondary',onClick=handle_search)
+            mui.Button(mui.icon.Add(),mui.Typography('Agregar',variant='caption',sx={'margin': '10px','fontSize': '2vw'}),color='secondary',onClick=handle_add)
+            mui.Button(mui.icon.DeleteForever(),mui.Typography('Eliminar',variant='caption',sx={'margin': '10px','fontSize': '2vw'}),color='secondary',onClick=handle_delete)
+
+
 
 if st.session_state.option == 'search':
     with elements('search'):
@@ -97,3 +102,5 @@ elif st.session_state.option == 'add':
         with mui.Box(sx={ '& > :not(style)': { 'm': 1 }, 'display': 'flex', 'flexDirection': 'row', 'justifyContent': 'flex-end', 'alignItems': 'right'}):
             with mui.Fab(color="primary", aria_label="add"):
                 mui.icon.Save()
+
+st.session_state
