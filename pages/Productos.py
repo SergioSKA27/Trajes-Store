@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit_elements import mui, dashboard, lazy,sync,partial,elements
 from st_xatadb_connection import XataConnection
 
+
 # Create a connection to the XataDB
 xata = st.connection('xata',type=XataConnection)
 
@@ -14,6 +15,9 @@ def handle_add():
 def handle_delete():
     st.session_state.option = 'delete'
 
+def handle_save():
+    st.session_state.save = True
+
 if 'option' not in st.session_state:
     st.session_state.option = 'None'
 
@@ -23,6 +27,9 @@ if 'gender' not in st.session_state:
 
 if 'talla' not in st.session_state:
     st.session_state.talla = 26
+
+if 'save' not in st.session_state:
+    st.session_state.save = False
 
 # Invetory Dashboard
 
@@ -102,7 +109,11 @@ elif st.session_state.option == 'add':
             mui.TextField(label='Precio',type='number',variant='outlined',sx={'margin': '10px','fontSize': '2vw','width': '100%'})
 
         with mui.Box(sx={ '& > :not(style)': { 'm': 1 }, 'display': 'flex', 'flexDirection': 'row', 'justifyContent': 'flex-end', 'alignItems': 'right'}):
-            with mui.Fab(color="primary", aria_label="add"):
+            with mui.Fab(color="primary", aria_label="add",onClick=handle_save):
                 mui.icon.Save()
+
+if st.session_state.save:
+    st.write('Guardado')
+    st.session_state.save = False
 
 st.session_state
