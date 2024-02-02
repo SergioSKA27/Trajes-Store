@@ -54,11 +54,12 @@ with elements('header'):
             mui.Button(mui.icon.LocalOffer(),mui.Typography('Productos',variant='caption',sx={'margin': '2px'}),color='primary')
             mui.Button(mui.icon.LocalAtm(),mui.Typography('Ventas',variant='caption',sx={'margin': '2px'}),color='primary')
 
-    with mui.Paper(sx={'display': 'flex', 'flexDirection': 'column','margin': '10px' , 'backgroundColor': 'secondary'},variant='elevation'):
+    with mui.Paper(sx={'display': 'flex', 'flexDirection': 'column','margin': '10px' , 'backgroundColor': 'secondary','width': '100%',},
+    variant='elevation'):
         with mui.Box(sx={'display': 'flex', 'flexDirection': 'row','margin': '5px'}):
             mui.icon.LocalOffer(color='primary',sx={'fontSize': '3vw'})
-            mui.Typography('Productos',variant='h6',sx={'margin': '5px','fontSize': '3.5vw','fontFamily': 'Monospace','fontWeight': 700,'letterSpacing': '.3rem','color': 'inherit','textDecoration': 'none'})
-            mui.Divider()
+            mui.Typography('Productos',variant='h6',sx={'margin': '5px','fontSize': '3.5vw','fontFamily': 'Monospace','fontWeight': 700})
+        mui.Divider()
         with mui.Box(sx={'display': 'flex', 'flexDirection': 'row',}):
             mui.Button(mui.icon.Search(),mui.Typography('Buscar',variant='caption',sx={'margin': '10px','fontSize': '2vw'}),color='secondary',onClick=handle_search)
             mui.Button(mui.icon.Add(),mui.Typography('Agregar',variant='caption',sx={'margin': '10px','fontSize': '2vw'}),color='secondary',onClick=handle_add)
@@ -73,6 +74,10 @@ if st.session_state.option == 'search':
             mui.TextField(label='Buscar',variant='outlined',sx={'margin': '10px','fontSize': '2vw','width': '100%'})
 elif st.session_state.option == 'add':
     with elements('add'):
+        with mui.Box(sx={'display': 'flex', 'flexDirection': 'row','alignItems': 'center'}):
+            mui.icon.DataSaverOn()
+            mui.Typography('Agregar Producto',variant='h6',sx={'margin': '10px','fontSize': '3vw','fontFamily': 'Bebas Neue'})
+        mui.Divider()
         with mui.Box(sx={'display': 'flex', 'flexDirection': 'row','alignItems': 'center'}):
             mui.icon.Abc()
             mui.TextField(label='Clave',variant='outlined',sx={'margin': '10px','fontSize': '2vw','width': '100%'})
