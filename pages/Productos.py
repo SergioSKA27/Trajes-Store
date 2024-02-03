@@ -11,13 +11,21 @@ st.set_page_config(page_title='Inventario',page_icon='🩱',layout='wide',initia
 xata = st.connection('xata',type=XataConnection)
 
 st.markdown('''
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-  rel="stylesheet"
-  href="https://fonts.googleapis.com/css2?family='Bebas Neue':wght@300;400;500;600;700&display=swap"
-/>
+<style>
+[data-testid="collapsedControl"] {
+        display: none
+    }
+
+#MainMenu, header, footer {visibility: hidden;}
+.st-emotion-cache-z5fcl4
+{
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0;
+}
+</style>
 ''',unsafe_allow_html=True)
+
 
 async def get_random_image():
     await asyncio.sleep(.1)

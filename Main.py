@@ -10,6 +10,23 @@ st.set_page_config(page_title='Inventario',page_icon='🩱',layout='wide',initia
 # Create a connection to the XataDB
 xata = st.connection('xata',type=XataConnection)
 
+st.markdown('''
+<style>
+[data-testid="collapsedControl"] {
+        display: none
+    }
+
+#MainMenu, header, footer {visibility: hidden;}
+.st-emotion-cache-z5fcl4
+{
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0;
+}
+</style>
+''',unsafe_allow_html=True)
+
+
 async def get_random_image(size):
     await asyncio.sleep(.1)
     data =  requests.get(f'https://source.unsplash.com/{size}/?swimsuit').content# 600
