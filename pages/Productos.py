@@ -20,7 +20,7 @@ st.markdown('''
 ''',unsafe_allow_html=True)
 
 async def get_random_image():
-    asyncio.sleep(.1)
+    await asyncio.sleep(.1)
     data =  requests.get('https://source.unsplash.com/1920x1080/?swimsuit').content# 600
     return base64.b64encode(data).decode()
 
