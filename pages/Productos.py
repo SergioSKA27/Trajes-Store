@@ -21,7 +21,7 @@ st.markdown('''
 
 async def get_random_image():
     await asyncio.sleep(.1)
-    data =  requests.get('https://source.unsplash.com/1920x1080/?swimsuit').content# 600
+    data =  requests.get('https://source.unsplash.com/600x900/?swimsuit').content# 600
     return base64.b64encode(data).decode()
 
 def render_card(product):
@@ -259,7 +259,7 @@ else:
     with elements('products'):
         productss = st.session_state.page_products[st.session_state.num_pageproducts]['records']
         with mui.Stack(direction={'xs': 'column', 'sm': 'row'},justifyContent="space-between"):
-            mui.Typography('Catalogo de Productos',variant='h6',sx={'margin': '0px','fontSize': '4vw','fontFamily': 'Bebas Neue'})
+            mui.Typography(mui.icon.ShoppingBasket(sx={'fontSize': '4vw',}),'Catalogo de Productos',variant='h6',sx={'margin': '0px','fontSize': '4vw','fontFamily': 'Bebas Neue'})
             with mui.ButtonGroup(variant="outlined", aria_label="loading button group",sx={'display': 'flex','alignItems': 'center','justifyContent': 'flex-end',
             'margin': '0px'}):
                 mui.Button(mui.icon.Cached(),color='primary',onClick=update_products)
