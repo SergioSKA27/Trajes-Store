@@ -5,12 +5,13 @@ import asyncio
 import requests
 import base64
 
+st.set_page_config(page_title='Inventario',page_icon='👗',layout='wide')
 # Create a connection to the XataDB
 xata = st.connection('xata',type=XataConnection)
 
 async def get_random_image():
     asyncio.sleep(.1)
-    data =  requests.get('https://source.unsplash.com/1920x1080/?swimsuit').content
+    data =  requests.get('https://source.unsplash.com/1920x1080/?swimsuit').content# 600
     return base64.b64encode(data).decode()
 def render_card(product):
     if 'imagenProducto' in product:
@@ -19,32 +20,32 @@ def render_card(product):
         urlasync = asyncio.run(get_random_image())
         url = f'data:image/jpeg;base64,{urlasync}'
     # Render the cards
-    with mui.Card(sx={'display': 'flex', 'flexDirection': 'row','alignItems': 'left','justifyContent': 'left','margin': '10px','width': '50%','maxHeight': '300px'}):
+    with mui.Card(sx={'display': 'flex', 'flexDirection': 'row','alignItems': 'left','justifyContent': 'left',
+    'margin': '10px','width': '100%','maxHeight': '300px'}):
         mui.CardMedia(
             component="img",
                 height=194,
                 image=url,
                 alt=product['modelo'],
-                sx={'display': 'flex', 'height': '100%','width': '50%'}
+                sx={'display': 'flex', 'height': '100%','maxWidth': '70%'}
         )
-        with mui.CardContent():
+        with mui.CardContent(sx={'display': 'flex', 'flexDirection': 'column','alignItems': 'left','justifyContent': 'left','width': '100%'}):
             mui.Typography(product['modelo'],variant='h5')
-            mui.Typography(f'Existencia: {product["existencia"]}',variant='body2')
-            mui.Typography(f'Precio: ${product["precio"]}',variant='body2')
-            mui.Typography(f'Corte: {product["corte"]}',variant='body2')
-            mui.Typography(f'Talla: {product["talla"]}',variant='body2')
-            mui.Typography(f'Genero: {product["genero"]}',variant='body2')
+            mui.Typography(f'Existencia: {product["existencia"]}',variant='body',sx={'fontSize': '1rem'})
+            mui.Typography(f'Precio: {product["precio"]} $',variant='body',sx={'fontSize': '1rem'})
+            mui.Typography(f'Corte: {product["corte"]}',variant='body',sx={'fontSize': '1rem'})
+            mui.Typography(f'Talla: {product["talla"]}',variant='body',sx={'fontSize': '1rem'})
+            mui.Typography(f'Genero: {product["genero"]}',variant='body',sx={'fontSize': '1rem'})
             mui.Typography(f'Clave: {product["clave"]}',variant='caption')
-
-        with mui.CardActions():
-            mui.Button(mui.icon.Visibility(),mui.Typography('Ver',variant='caption',
-            ),color='primary',variant='text',sx={'display': 'flex','alignItems': 'right','justifyContent': 'flex-end','margin': '10px'},)
-
+            mui.Button(mui.icon.Visibility(),mui.Typography('Ver',variant='button',sx={'margin': '10px'}
+            ),color='primary',variant='text',sx={'display': 'flex','alignItems': 'right','justifyContent': 'flex-end','width': '100%'})
 
 
 
 def update_products():
     st.session_state.page_products = [xata.query("Producto",{'page': {'size': 10 }})]
+    st.session_state.num_pageproducts = 0
+    st.session_state.reload = True
 
 
 def handle_search():
@@ -87,6 +88,9 @@ def handle_closeimgmodal():
 def handle_saveimg():
     st.session_state.img_modal = True
 
+
+if 'reload' not in st.session_state:
+    st.session_state.reload = False
 
 if 'option' not in st.session_state:
     st.session_state.option = 'None'
@@ -134,6 +138,11 @@ if 'num_pageproducts' not in st.session_state:
 if 'last_insert' not in st.session_state:
     st.session_state.last_insert = None
 # Invetory Dashboard
+
+if st.session_state.reload:
+    st.session_state.reload = False
+    st.rerun()
+
 
 with elements('header'):
     with mui.AppBar (position='static'):
@@ -306,35 +315,40 @@ if st.session_state.img_modal:
 
 
 
-if st.button('Actualizar'):
-    update_products()
-    st.rerun()
+
 with elements('products'):
     productss = st.session_state.page_products[st.session_state.num_pageproducts]['records']
-    with mui.Stack(direction='row',spacing=1):
+    with mui.Stack(direction={'xs': 'column', 'sm': 'row'},justifyContent="space-between"):
+        mui.Typography('Catalogo de Productos',variant='h6',sx={'margin': '10px','fontSize': '3vw','fontFamily': 'Bebas Neue'})
+        with mui.ButtonGroup(variant="outlined", aria_label="loading button group",sx={'display': 'flex','alignItems': 'right','justifyContent': 'flex-end','margin': '10px'}):
+            mui.Button(mui.icon.Cached(),color='primary',onClick=update_products)
+            mui.Button(mui.icon.ArrowBackIos(),color='primary',)
+            mui.Button(mui.icon.ArrowForwardIos(),color='primary')
+    mui.Divider(sx={'margin': '10px'})
+    with mui.Stack(direction={'xs': 'column', 'sm': 'row'},spacing=1):
         if len(productss) > 0:
             render_card(productss[0])
         if len(productss) > 1:
             render_card(productss[1])
-    with mui.Stack(direction='row',spacing=1):
+    with mui.Stack(direction={'xs': 'column', 'sm': 'row'},spacing=1):
         if len(productss) > 2:
             render_card(productss[2])
         if len(productss) > 3:
             render_card(productss[3])
 
-    with mui.Stack(direction='row',spacing=1):
+    with mui.Stack(direction={'xs': 'column', 'sm': 'row'},spacing=1):
         if len(productss) > 4:
             render_card(productss[4])
         if len(productss) > 5:
             render_card(productss[5])
 
-    with mui.Stack(direction='row',spacing=1):
+    with mui.Stack(direction={'xs': 'column', 'sm': 'row'},spacing=1):
         if len(productss) > 6:
             render_card(productss[6])
         if len(productss) > 7:
             render_card(productss[7])
 
-    with mui.Stack(direction='row',spacing=1):
+    with mui.Stack(direction={'xs': 'column', 'sm': 'row'},spacing=1):
         if len(productss) > 8:
             render_card(productss[8])
         if len(productss) > 9:
