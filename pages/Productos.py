@@ -15,8 +15,6 @@ st.markdown('''
 [data-testid="collapsedControl"] {
         display: none
     }
-
-#MainMenu, header, footer {visibility: hidden;}
 </style>
 ''',unsafe_allow_html=True)
 
