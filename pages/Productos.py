@@ -104,12 +104,30 @@ def handle_saveimg():
 def handle_closeadd():
     st.session_state.option = 'None'
 
+def handle_closesearch():
+    st.session_state.option = 'None'
+
+def handle_nextpage():
+    data = xata.next_page('Producto',st.session_state.page_products[st.session_state.num_pageproducts],pagesize=10)
+    if data is not None:
+        st.session_state.page_products.append(data)
+        st.session_state.num_pageproducts += 1
+        st.session_state.reload = True
+
+def handle_previouspage():
+    if st.session_state.num_pageproducts > 0:
+        st.session_state.num_pageproducts -= 1
+        st.session_state.reload = True
+
 
 if 'menu_selected' not in st.session_state:
     st.session_state.menu_selected = 'Productos'
 
 if 'reload' not in st.session_state:
     st.session_state.reload = False
+
+if 'imgtoast' not in st.session_state:
+    st.session_state.imgtoast = False
 
 if 'option' not in st.session_state:
     st.session_state.option = 'None'
@@ -165,6 +183,11 @@ if st.session_state.reload:
 if st.session_state.menu_selected == 'Main':
     switch_page('Main')
 
+if st.session_state.imgtoast:
+    st.toast('Imagen Guardada',icon='🎉')
+    st.session_state.imgtoast = False
+
+
 with elements('header'):
     with mui.AppBar (position='static'):
         with mui.Toolbar():
@@ -204,6 +227,7 @@ if st.session_state.option == 'search':
         with mui.Box(sx={'display': 'flex', 'flexDirection': 'row','alignItems': 'center'}):
             mui.icon.Search()
             mui.TextField(label='Buscar',variant='outlined',sx={'margin': '10px','fontSize': '2vw','width': '100%'})
+            mui.Button(mui.icon.Close(),color='error',variant='text',onClick=handle_closesearch)
 elif st.session_state.option == 'add':
     with elements('add'):
         with mui.Box(sx={'display': 'flex', 'flexDirection': 'row','alignItems': 'left','justifyContent': 'space-between'}):
@@ -263,8 +287,8 @@ else:
             with mui.ButtonGroup(variant="outlined", aria_label="loading button group",sx={'display': 'flex','alignItems': 'center','justifyContent': 'flex-end',
             'margin': '0px'}):
                 mui.Button(mui.icon.Cached(),color='primary',onClick=update_products)
-                mui.Button(mui.icon.ArrowBackIos(),color='primary',)
-                mui.Button(mui.icon.ArrowForwardIos(),color='primary')
+                mui.Button(mui.icon.ArrowBackIos(),color='primary',onClick=handle_previouspage,disabled=st.session_state.num_pageproducts == 0)
+                mui.Button(mui.icon.ArrowForwardIos(),color='primary',onClick=handle_nextpage)
         mui.Divider(sx={'margin': '10px'})
         with mui.Stack(direction={'xs': 'column', 'sm': 'row'},spacing=1):
             if len(productss) > 0:
@@ -300,7 +324,6 @@ else:
 
 
 if st.session_state.save:
-    st.write('Guardado')
     with elements('add_modal'):
         mui.Typography('Desea guardar los cambios?',variant='h6',sx={'margin': '10px','fontSize': '3vw','fontFamily': 'Bebas Neue','display': 'flex', 'alignItems': 'right','justifyContent': 'flex-end'})
         with mui.Box(sx={'display': 'flex', 'flexDirection': 'row','alignItems': 'right','justifyContent': 'flex-end'}):
@@ -346,23 +369,19 @@ if st.session_state.modalsave == 'Save':
                     mui.Button('Cancelar',color='error',onClick=handle_closeimgmodal)
                     mui.Button('Agregar Imagen',color='primary',onClick=handle_saveimg,key='imgupload')
 
-
-
-
-
-
-
 if st.session_state.img_modal:
     colsimg = st.columns([0.6,0.4])
     img = None
     with colsimg[1]:
         img = st.file_uploader('Subir Imagen',type=['jpg','png','jpeg'])
-        if st.button('Guardar'):
+        if st.button('Guardar Imagen',use_container_width=True):
             if img is not None:
                 with st.spinner('Guardando Imagen...'):
                     try:
                         resultimg = xata.upload_file('Producto',st.session_state.last_insert['id'],'imagenProducto',img.read(),content_type=img.type)
-                        st.toast('Imagen Guardada',icon='🎉')
+                        st.session_state.imgtoast = True
+                        st.session_state.img_modal = False
+                        st.rerun()
                     except Exception as e:
                         st.error(f'Error al guardar la imagen: {e}')
             else:
@@ -380,7 +399,7 @@ if st.session_state.img_modal:
 
 
 
-st.write(st.session_state.page_products[st.session_state.num_pageproducts])
+#st.write(st.session_state.page_products[st.session_state.num_pageproducts])
 
 
-st.session_state
+#st.session_state

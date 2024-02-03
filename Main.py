@@ -9,7 +9,7 @@ import base64
 xata = st.connection('xata',type=XataConnection)
 
 async def get_random_image(size):
-    asyncio.sleep(.1)
+    await asyncio.sleep(.1)
     data =  requests.get(f'https://source.unsplash.com/{size}/?swimsuit').content# 600
     return base64.b64encode(data).decode()
 
