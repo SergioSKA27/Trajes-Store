@@ -1,10 +1,51 @@
 import streamlit as st
 from streamlit_elements import mui, dashboard, lazy,sync,partial,elements
 from st_xatadb_connection import XataConnection
-
+import asyncio
+import requests
+import base64
 
 # Create a connection to the XataDB
 xata = st.connection('xata',type=XataConnection)
+
+async def get_random_image():
+    asyncio.sleep(.1)
+    data =  requests.get('https://source.unsplash.com/1920x1080/?swimsuit').content
+    return base64.b64encode(data).decode()
+def render_card(product):
+    if 'imagenProducto' in product:
+        url = product['imagenProducto']['url']
+    else:
+        urlasync = asyncio.run(get_random_image())
+        url = f'data:image/jpeg;base64,{urlasync}'
+    # Render the cards
+    with mui.Card(sx={'display': 'flex', 'flexDirection': 'row','alignItems': 'left','justifyContent': 'left','margin': '10px','width': '50%','maxHeight': '300px'}):
+        mui.CardMedia(
+            component="img",
+                height=194,
+                image=url,
+                alt=product['modelo'],
+                sx={'display': 'flex', 'height': '100%','width': '50%'}
+        )
+        with mui.CardContent():
+            mui.Typography(product['modelo'],variant='h5')
+            mui.Typography(f'Existencia: {product["existencia"]}',variant='body2')
+            mui.Typography(f'Precio: ${product["precio"]}',variant='body2')
+            mui.Typography(f'Corte: {product["corte"]}',variant='body2')
+            mui.Typography(f'Talla: {product["talla"]}',variant='body2')
+            mui.Typography(f'Genero: {product["genero"]}',variant='body2')
+            mui.Typography(f'Clave: {product["clave"]}',variant='caption')
+
+        with mui.CardActions():
+            mui.Button(mui.icon.Visibility(),mui.Typography('Ver',variant='caption',
+            ),color='primary',variant='text',sx={'display': 'flex','alignItems': 'right','justifyContent': 'flex-end','margin': '10px'},)
+
+
+
+
+def update_products():
+    st.session_state.page_products = [xata.query("Producto",{'page': {'size': 10 }})]
+
 
 def handle_search():
     st.session_state.option = 'search'
@@ -84,7 +125,11 @@ if 'modalsave' not in st.session_state:
 if 'img_modal' not in st.session_state:
     st.session_state.img_modal = False
 
+if 'page_products' not in st.session_state:
+    st.session_state.page_products = [xata.query("Producto",{'page': {'size': 10 }})]
 
+if 'num_pageproducts' not in st.session_state:
+    st.session_state.num_pageproducts = 0
 
 if 'last_insert' not in st.session_state:
     st.session_state.last_insert = None
@@ -208,12 +253,12 @@ if st.session_state.modalsave == 'Save':
         with st.spinner('Guardando Producto...'):
             try:
                 result = xata.insert("Producto", {
-                    "clave": st.session_state.clave,
-                    "modelo": st.session_state.modelo,
+                    "clave": st.session_state.clave.upper(),
+                    "modelo": st.session_state.modelo.upper(),
                     "genero": st.session_state.gender.props.value if st.session_state.gender != "Hombre" else "H",
                     "talla": st.session_state.talla.props.value if st.session_state.talla != 26 else 26,
                     "existencia": int(st.session_state.existencia),
-                    "corte": st.session_state.corte,
+                    "corte": st.session_state.corte.upper(),
                     "precio": float(st.session_state.precio),
                     })
                 st.session_state.last_insert = result
@@ -260,6 +305,43 @@ if st.session_state.img_modal:
             st.write('No se ha seleccionado ninguna imagen')
 
 
+
+if st.button('Actualizar'):
+    update_products()
+    st.rerun()
+with elements('products'):
+    productss = st.session_state.page_products[st.session_state.num_pageproducts]['records']
+    with mui.Stack(direction='row',spacing=1):
+        if len(productss) > 0:
+            render_card(productss[0])
+        if len(productss) > 1:
+            render_card(productss[1])
+    with mui.Stack(direction='row',spacing=1):
+        if len(productss) > 2:
+            render_card(productss[2])
+        if len(productss) > 3:
+            render_card(productss[3])
+
+    with mui.Stack(direction='row',spacing=1):
+        if len(productss) > 4:
+            render_card(productss[4])
+        if len(productss) > 5:
+            render_card(productss[5])
+
+    with mui.Stack(direction='row',spacing=1):
+        if len(productss) > 6:
+            render_card(productss[6])
+        if len(productss) > 7:
+            render_card(productss[7])
+
+    with mui.Stack(direction='row',spacing=1):
+        if len(productss) > 8:
+            render_card(productss[8])
+        if len(productss) > 9:
+            render_card(productss[9])
+
+
+st.write(st.session_state.page_products[st.session_state.num_pageproducts])
 
 
 st.session_state
