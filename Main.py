@@ -12,10 +12,7 @@ async def get_random_image(size):
     data =  requests.get(f'https://source.unsplash.com/{size}/?swimsuit').content# 600
     return base64.b64encode(data).decode()
 
-if 'bannerimages' not in st.session_state:
-    st.session_state.bannerimages = []
-    for i in range(10):
-        st.session_state.bannerimages.append(asyncio.run(get_random_image('1920x1080')))
+
 
 if 'bannerquery' not in st.session_state:
     st.session_state.bannerquery = xata.query('Producto',{'columns':['id','imagenProducto.url'], 'page':{ 'size': 5}})
@@ -49,55 +46,68 @@ with elements('banner'):
         with mui.ImageListItem(key='img', cols=2, rows=2):
             if len(st.session_state.bannerquery) > 0:
                 img1 = st.session_state.bannerquery['records'][0]['imagenProducto']['url']
-                html.img(src=img1, alt='swimsuit')
+                html.img(src=img1, alt='swimsuit',style={'width':'100%','height':'100%'})
             else:
                 img1 = asyncio.run(get_random_image('1920x1080'))
-                html.img(src=f"data:image/png;base64,{img1}",alt='swimsuit')
-        with mui.ImageListItem(key='img-2',):
-            img2 = asyncio.run(get_random_image('1920x1080'))
+                html.img(src=f"data:image/png;base64,{img1}",alt='swimsuit',style={'width':'100%','height':'100%'})
+
+        with mui.ImageListItem(key='img-2'):
+            img2 = asyncio.run(get_random_image('600x600'))
             html.img(src=f"data:image/png;base64,{img2}",
-            alt='swimsuit')
+            alt='swimsuit',style={'width':'100%','height':'100%'})
+
         with mui.ImageListItem(key='img-3',):
-            img3 = asyncio.run(get_random_image('1920x1080'))
+            img3 = asyncio.run(get_random_image('600x600'))
             html.img(src=f"data:image/png;base64,{img3}",
-            alt='swimsuit')
+            alt='swimsuit',style={'width':'100%','height':'100%'})
+
         with mui.ImageListItem(key='img-4',cols=2):
             if len(st.session_state.bannerquery) > 1:
                 img4 = st.session_state.bannerquery['records'][1]['imagenProducto']['url']
-                html.img(src=img4, alt='swimsuit')
+                html.img(src=img4, alt='swimsuit',style={'width':'100%','height':'100%'})
             else:
                 img4 = asyncio.run(get_random_image('1920x1080'))
-                html.img(src=f"data:image/png;base64,{img4}",alt='swimsuit')
+                html.img(src=f"data:image/png;base64,{img4}",alt='swimsuit',style={'width':'100%','height':'100%'})
+
         with mui.ImageListItem(key='img-5',cols=2):
             if len(st.session_state.bannerquery) > 2:
                 img5 = st.session_state.bannerquery['records'][2]['imagenProducto']['url']
-                html.img(src=img5, alt='swimsuit')
+                html.img(src=img5, alt='swimsuit',style={'width':'100%','height':'100%'})
             else:
                 img5 = asyncio.run(get_random_image('1920x1080'))
-                html.img(src=f"data:image/png;base64,{img5}",alt='swimsuit')
+                html.img(src=f"data:image/png;base64,{img5}",alt='swimsuit',style={'width':'100%','height':'100%'})
+
         with mui.ImageListItem(key='img-6', cols=2, rows=2):
             img6 = asyncio.run(get_random_image('1920x1080'))
             html.img(src=f"data:image/png;base64,{img6}",
-            alt='swimsuit')
+            alt='swimsuit',style={'width':'100%','height':'100%'})
+
         with mui.ImageListItem(key='img-7',):
             img7 = asyncio.run(get_random_image('1920x1080'))
             html.img(src=f"data:image/png;base64,{img7}",
-            alt='swimsuit')
+            alt='swimsuit',style={'width':'100%','height':'100%'})
+
         with mui.ImageListItem(key='img-8',):
             if len(st.session_state.bannerquery) > 3:
                 img8 = st.session_state.bannerquery['records'][3]['imagenProducto']['url']
-                html.img(src=img8, alt='swimsuit')
+                html.img(src=img8, alt='swimsuit',style={'width':'100%','height':'100%'})
             else:
                 img8 = asyncio.run(get_random_image('1920x1080'))
-                html.img(src=f"data:image/png;base64,{img8}",alt='swimsuit')
+                html.img(src=f"data:image/png;base64,{img8}",alt='swimsuit',style={'width':'100%','height':'100%'})
         with mui.ImageListItem(key='img-9',cols=2):
             img9 = asyncio.run(get_random_image('1920x1080'))
             html.img(src=f"data:image/png;base64,{img9}",
-            alt='swimsuit')
-        with mui.ImageListItem(key='img-10',cols=2):
+            alt='swimsuit',style={'width':'100%','height':'100%'})
+
+        with mui.ImageListItem(key='img-10',cols=1,rows=1):
             if len(st.session_state.bannerquery) > 4:
                 img10 = st.session_state.bannerquery['records'][4]['imagenProducto']['url']
-                html.img(src=img10, alt='swimsuit')
+                html.img(src=img10, alt='swimsuit',style={'width':'100%','height':'100%'})
             else:
                 img10 = asyncio.run(get_random_image('1920x1080'))
-                html.img(src=f"data:image/png;base64,{img10}",alt='swimsuit')
+                html.img(src=f"data:image/png;base64,{img10}",alt='swimsuit',style={'width':'100%','height':'100%'})
+
+        with mui.ImageListItem(key='img-11'):
+            img11 = asyncio.run(get_random_image('1920x1080'))
+            html.img(src=f"data:image/png;base64,{img11}",
+            alt='swimsuit',style={'width':'100%','height':'100%'})
