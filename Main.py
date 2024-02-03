@@ -17,12 +17,6 @@ st.markdown('''
     }
 
 #MainMenu, header, footer {visibility: hidden;}
-.st-emotion-cache-z5fcl4
-{
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-top: 0;
-}
 </style>
 ''',unsafe_allow_html=True)
 
