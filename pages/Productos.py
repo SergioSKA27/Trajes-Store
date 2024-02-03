@@ -9,6 +9,15 @@ st.set_page_config(page_title='Inventario',page_icon='👗',layout='wide')
 # Create a connection to the XataDB
 xata = st.connection('xata',type=XataConnection)
 
+st.markdown('''
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family='Bebas Neue':wght@300;400;500;600;700&display=swap"
+/>
+''',unsafe_allow_html=True)
+
 async def get_random_image():
     asyncio.sleep(.1)
     data =  requests.get('https://source.unsplash.com/1920x1080/?swimsuit').content# 600
@@ -319,8 +328,9 @@ if st.session_state.img_modal:
 with elements('products'):
     productss = st.session_state.page_products[st.session_state.num_pageproducts]['records']
     with mui.Stack(direction={'xs': 'column', 'sm': 'row'},justifyContent="space-between"):
-        mui.Typography('Catalogo de Productos',variant='h6',sx={'margin': '10px','fontSize': '3vw','fontFamily': 'Bebas Neue'})
-        with mui.ButtonGroup(variant="outlined", aria_label="loading button group",sx={'display': 'flex','alignItems': 'right','justifyContent': 'flex-end','margin': '10px'}):
+        mui.Typography('Catalogo de Productos',variant='h6',sx={'margin': '0px','fontSize': '4vw','fontFamily': 'Bebas Neue'})
+        with mui.ButtonGroup(variant="outlined", aria_label="loading button group",sx={'display': 'flex','alignItems': 'center','justifyContent': 'flex-end',
+        'margin': '0px'}):
             mui.Button(mui.icon.Cached(),color='primary',onClick=update_products)
             mui.Button(mui.icon.ArrowBackIos(),color='primary',)
             mui.Button(mui.icon.ArrowForwardIos(),color='primary')
