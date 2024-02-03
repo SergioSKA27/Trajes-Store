@@ -5,6 +5,8 @@ from st_xatadb_connection import XataConnection
 import asyncio
 import requests
 import base64
+
+st.set_page_config(page_title='Inventario',page_icon='🩱',layout='wide',initial_sidebar_state='collapsed')
 # Create a connection to the XataDB
 xata = st.connection('xata',type=XataConnection)
 
