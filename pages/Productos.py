@@ -1,5 +1,6 @@
 import streamlit as st
 from streamlit_elements import mui, dashboard, lazy,sync,partial,elements
+from streamlit_extras.switch_page_button import switch_page
 from st_xatadb_connection import XataConnection
 import asyncio
 import requests
@@ -22,6 +23,7 @@ async def get_random_image():
     asyncio.sleep(.1)
     data =  requests.get('https://source.unsplash.com/1920x1080/?swimsuit').content# 600
     return base64.b64encode(data).decode()
+
 def render_card(product):
     if 'imagenProducto' in product:
         url = product['imagenProducto']['url']
@@ -50,6 +52,8 @@ def render_card(product):
             ),color='primary',variant='text',sx={'display': 'flex','alignItems': 'right','justifyContent': 'flex-end','width': '100%'})
 
 
+def switch_page_main():
+    st.session_state.menu_selected = 'Main'
 
 def update_products():
     st.session_state.page_products = [xata.query("Producto",{'page': {'size': 10 }})]
@@ -97,6 +101,12 @@ def handle_closeimgmodal():
 def handle_saveimg():
     st.session_state.img_modal = True
 
+def handle_closeadd():
+    st.session_state.option = 'None'
+
+
+if 'menu_selected' not in st.session_state:
+    st.session_state.menu_selected = 'Productos'
 
 if 'reload' not in st.session_state:
     st.session_state.reload = False
@@ -152,6 +162,8 @@ if st.session_state.reload:
     st.session_state.reload = False
     st.rerun()
 
+if st.session_state.menu_selected == 'Main':
+    switch_page('Main')
 
 with elements('header'):
     with mui.AppBar (position='static'):
@@ -171,7 +183,7 @@ with elements('header'):
     with mui.Box(sx={'display': 'flex', 'flexDirection': 'row', 'justifyContent': 'flex-end', 'alignItems': 'right'}):
         with mui.ButtonGroup(variant="text", aria_label="loading button group",sx={'display': 'flex'}):
             mui.Button(mui.icon.LocalShipping(),mui.Typography('Pendientes',variant='caption',sx={'margin': '2px'}),color='primary')
-            mui.Button(mui.icon.LocalOffer(),mui.Typography('Productos',variant='caption',sx={'margin': '2px'}),color='primary')
+            mui.Button(mui.icon.Home(),mui.Typography('Inicio',variant='caption',sx={'margin': '2px'}),color='primary',onClick=switch_page_main)
             mui.Button(mui.icon.LocalAtm(),mui.Typography('Ventas',variant='caption',sx={'margin': '2px'}),color='primary')
 
     with mui.Paper(sx={'display': 'flex', 'flexDirection': 'column','margin': '10px' , 'backgroundColor': 'secondary','width': '100%',},
@@ -194,9 +206,9 @@ if st.session_state.option == 'search':
             mui.TextField(label='Buscar',variant='outlined',sx={'margin': '10px','fontSize': '2vw','width': '100%'})
 elif st.session_state.option == 'add':
     with elements('add'):
-        with mui.Box(sx={'display': 'flex', 'flexDirection': 'row','alignItems': 'center'}):
-            mui.icon.DataSaverOn()
-            mui.Typography('Agregar Producto',variant='h6',sx={'margin': '10px','fontSize': '3vw','fontFamily': 'Bebas Neue'})
+        with mui.Box(sx={'display': 'flex', 'flexDirection': 'row','alignItems': 'left','justifyContent': 'space-between'}):
+            mui.Typography(mui.icon.DataSaverOn(),'Agregar Producto',variant='h6',sx={'margin': '10px','fontSize': '3vw','fontFamily': 'Bebas Neue'})
+            mui.Button(mui.icon.Close(),color='error',variant='text',onClick=handle_closeadd)
         mui.Divider()
         with mui.Box(sx={'display': 'flex', 'flexDirection': 'row','alignItems': 'center'}):
             mui.icon.Abc()
@@ -242,6 +254,47 @@ elif st.session_state.option == 'add':
         existencia = int(st.session_state.existencia)
     except:
         st.warning('Precio y Existencia deben ser numeros')
+
+else:
+    with elements('products'):
+        productss = st.session_state.page_products[st.session_state.num_pageproducts]['records']
+        with mui.Stack(direction={'xs': 'column', 'sm': 'row'},justifyContent="space-between"):
+            mui.Typography('Catalogo de Productos',variant='h6',sx={'margin': '0px','fontSize': '4vw','fontFamily': 'Bebas Neue'})
+            with mui.ButtonGroup(variant="outlined", aria_label="loading button group",sx={'display': 'flex','alignItems': 'center','justifyContent': 'flex-end',
+            'margin': '0px'}):
+                mui.Button(mui.icon.Cached(),color='primary',onClick=update_products)
+                mui.Button(mui.icon.ArrowBackIos(),color='primary',)
+                mui.Button(mui.icon.ArrowForwardIos(),color='primary')
+        mui.Divider(sx={'margin': '10px'})
+        with mui.Stack(direction={'xs': 'column', 'sm': 'row'},spacing=1):
+            if len(productss) > 0:
+                render_card(productss[0])
+            if len(productss) > 1:
+                render_card(productss[1])
+        with mui.Stack(direction={'xs': 'column', 'sm': 'row'},spacing=1):
+            if len(productss) > 2:
+                render_card(productss[2])
+            if len(productss) > 3:
+                render_card(productss[3])
+
+        with mui.Stack(direction={'xs': 'column', 'sm': 'row'},spacing=1):
+            if len(productss) > 4:
+                render_card(productss[4])
+            if len(productss) > 5:
+                render_card(productss[5])
+
+        with mui.Stack(direction={'xs': 'column', 'sm': 'row'},spacing=1):
+            if len(productss) > 6:
+                render_card(productss[6])
+            if len(productss) > 7:
+                render_card(productss[7])
+
+        with mui.Stack(direction={'xs': 'column', 'sm': 'row'},spacing=1):
+            if len(productss) > 8:
+                render_card(productss[8])
+            if len(productss) > 9:
+                render_card(productss[9])
+
 
 
 
@@ -325,44 +378,6 @@ if st.session_state.img_modal:
 
 
 
-with elements('products'):
-    productss = st.session_state.page_products[st.session_state.num_pageproducts]['records']
-    with mui.Stack(direction={'xs': 'column', 'sm': 'row'},justifyContent="space-between"):
-        mui.Typography('Catalogo de Productos',variant='h6',sx={'margin': '0px','fontSize': '4vw','fontFamily': 'Bebas Neue'})
-        with mui.ButtonGroup(variant="outlined", aria_label="loading button group",sx={'display': 'flex','alignItems': 'center','justifyContent': 'flex-end',
-        'margin': '0px'}):
-            mui.Button(mui.icon.Cached(),color='primary',onClick=update_products)
-            mui.Button(mui.icon.ArrowBackIos(),color='primary',)
-            mui.Button(mui.icon.ArrowForwardIos(),color='primary')
-    mui.Divider(sx={'margin': '10px'})
-    with mui.Stack(direction={'xs': 'column', 'sm': 'row'},spacing=1):
-        if len(productss) > 0:
-            render_card(productss[0])
-        if len(productss) > 1:
-            render_card(productss[1])
-    with mui.Stack(direction={'xs': 'column', 'sm': 'row'},spacing=1):
-        if len(productss) > 2:
-            render_card(productss[2])
-        if len(productss) > 3:
-            render_card(productss[3])
-
-    with mui.Stack(direction={'xs': 'column', 'sm': 'row'},spacing=1):
-        if len(productss) > 4:
-            render_card(productss[4])
-        if len(productss) > 5:
-            render_card(productss[5])
-
-    with mui.Stack(direction={'xs': 'column', 'sm': 'row'},spacing=1):
-        if len(productss) > 6:
-            render_card(productss[6])
-        if len(productss) > 7:
-            render_card(productss[7])
-
-    with mui.Stack(direction={'xs': 'column', 'sm': 'row'},spacing=1):
-        if len(productss) > 8:
-            render_card(productss[8])
-        if len(productss) > 9:
-            render_card(productss[9])
 
 
 st.write(st.session_state.page_products[st.session_state.num_pageproducts])
