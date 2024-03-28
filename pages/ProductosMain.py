@@ -69,7 +69,16 @@ def has_changed(product,clave,modelo,corte,genero,talla,existencia,precio):
         return True
     return False
 def reload_data():
-    st.session_state.products_data = [xata.query("Producto",{'page': {'size': 9 }})]
+    data = [xata.query("Producto",{'page': {'size': 9 }})]
+
+    while len(data) < len(st.session_state.products_data):
+        ap = xata.next_page('Producto',data[-1],9)
+        if ap:
+            data.append(ap)
+        else:
+            break
+
+    st.session_state.products_data = data
     st.session_state.page_products = 0
     st.session_state.search = []
 
@@ -94,6 +103,15 @@ def update_product(product,nwproduct):
         st.toast('Producto actualizado',icon='🎉')
         reload_data()
 
+
+def del_product(productid=None):
+    res = client.records().delete("Producto",productid)
+    print(res)
+    if len(res)  > 0:
+        st.toast('Error al eliminar el producto',icon='⚠️')
+    else:
+        st.toast('Producto eliminado',icon='🎉')
+        reload_data()
 
 @st.cache_resource(experimental_allow_widgets=True)
 def render_card(product,serach=False):
@@ -134,7 +152,8 @@ def render_card(product,serach=False):
         with cols[0].popover('Eliminar Producto',help='Eliminar este producto de la base de datos',use_container_width=True):
             if st.button(':red[Eliminar Producto]',key=f"delete_{product['id']}"+ad):
                 st.write('¿Esta seguro de eliminar el producto? este cambio no se puede deshacer')
-                st.button('Si, eliminar')
+                if st.button('Si, eliminar',on_click=del_product,kwargs={'productid': product['id']},key=f"delete_confirm_{product['id']}"+ad):
+                    st.rerun()
 
                 st.button('Cancelar')
 
