@@ -53,6 +53,7 @@ def has_changed(product,clave,modelo,corte,genero,talla,existencia,precio):
     return False
 def reload_data():
     st.session_state.products_data = [xata.query("Producto",{'page': {'size': 9 }})]
+    st.session_state.page_products = 0
 
 @st.cache_resource(experimental_allow_widgets=True)
 def render_card(product):
@@ -116,13 +117,17 @@ for chunk in st.session_state.products_data:
         if k == 3:
             k = 0
 
-if st.button('Cargar mas productos',use_container_width=True):
+if st.session_state.page_products == -1:
+    lascols = st.columns([.3,.4,.3])
+    lascols[1].image('https://i.pinimg.com/originals/e9/9c/27/e99c27d9fae3df5d2d2dc58dabaeaedb.gif',caption='No hay mas productos',use_column_width=True)
+
+if st.button('Cargar mas productos',use_container_width=True,disabled=st.session_state.page_products == -1):
     datas = xata.next_page('Producto',st.session_state.products_data[-1],9)
     if datas:
         st.session_state.products_data.append(datas)
     else:
-        st.error('No hay mas productos para mostrar')
+        st.session_state.page_products = -1
 
     st.rerun()
 
-st.image(asyncio.run(get_random_image("600x600")),caption='Random Image')
+#st.image(asyncio.run(get_random_image("600x600")),caption='Random Image')
