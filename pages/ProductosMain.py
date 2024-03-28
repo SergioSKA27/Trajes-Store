@@ -71,6 +71,7 @@ def has_changed(product,clave,modelo,corte,genero,talla,existencia,precio):
 def reload_data():
     st.session_state.products_data = [xata.query("Producto",{'page': {'size': 9 }})]
     st.session_state.page_products = 0
+    st.session_state.search = []
 
 
 @st.cache_data(ttl=60)
