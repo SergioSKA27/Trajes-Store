@@ -1,9 +1,7 @@
 import streamlit as st
 from st_xatadb_connection import XataConnection,XataClient
-import time
 import asyncio
 import requests
-import base64
 
 
 st.set_page_config(page_title='Inventario',page_icon='🩱',layout='wide')
