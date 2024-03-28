@@ -87,7 +87,11 @@ def search_products(s: str):
 def update_product(product,nwproduct):
     res = client.records().update("Producto",product['id'],nwproduct)
     print(res)
-    st.toast('Producto actualizado',icon='🎉')
+    if res.status_code != 200:
+        st.toast('Error al actualizar el producto',icon='⚠️')
+    else:
+        st.toast('Producto actualizado',icon='🎉')
+        reload_data()
 
 
 @st.cache_resource(experimental_allow_widgets=True)
@@ -117,7 +121,8 @@ def render_card(product,serach=False):
             nprecio = st.number_input('Precio',min_value=0.0,step=0.01,format="%.2f",value=float(product['precio']),help='Precio del producto',key=f"precio_{product['id']}"+ad)
             if has_changed(product,nclave,nmodelo,ncorte,ngenero,ntalla,nexistencia,nprecio) and validate_product(nclave,nmodelo,ncorte,nexistencia,nprecio):
                 np = {'clave': nclave.upper(), 'modelo': nmodelo.upper(), 'corte': ncorte.upper(), 'genero': ngenero.upper(), 'talla': int(ntalla), 'existencia': int(nexistencia), 'precio': float(nprecio)}
-                st.button('Guardar Cambios',key=f"save_{product['id']}"+ad,on_click=update_product,args=(product,np))
+                if st.button('Guardar Cambios',key=f"save_{product['id']}"+ad,on_click=update_product,args=(product,np)):
+                    st.rerun()
 
         with cols[0]:
             if 'imagenProducto' in product and 'url' in product['imagenProducto']:
