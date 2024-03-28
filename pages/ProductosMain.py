@@ -150,7 +150,7 @@ def render_card(product,serach=False):
             nprecio = st.number_input('Precio',min_value=0.0,step=0.01,format="%.2f",value=float(product['precio']),help='Precio del producto',key=f"precio_{product['id']}"+ad)
             imgn = st.file_uploader('Imagen del producto',type=['jpg','png','jpeg'],key=f"imagen_{product['id']}"+ad)
 
-            if has_changed(product,nclave,nmodelo,ncorte,ngenero,ntalla,nexistencia,nprecio) and validate_product(nclave,nmodelo,ncorte,nexistencia,nprecio):
+            if (has_changed(product,nclave,nmodelo,ncorte,ngenero,ntalla,nexistencia,nprecio) and validate_product(nclave,nmodelo,ncorte,nexistencia,nprecio)) or imgn is not None:
                 np = {'clave': nclave.upper(), 'modelo': nmodelo.upper(), 'corte': ncorte.upper(), 'genero': ngenero.upper(), 'talla': int(ntalla), 'existencia': int(nexistencia), 'precio': float(nprecio)}
                 if st.button('Guardar Cambios',key=f"save_{product['id']}"+ad,on_click=update_product,args=(product,np,imgn)):
                     st.rerun()
