@@ -37,7 +37,7 @@ if 'bannerquery' not in st.session_state:
 
 
 if st.session_state.menu_selected == 'Productos':
-    switch_page('Productos')
+    st.switch_page('pages/simpleProducts.py')
 
 # Invetory Dashboard
 

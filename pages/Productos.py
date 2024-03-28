@@ -38,7 +38,7 @@ def render_card(product):
                 height=194,
                 image=url,
                 alt=product['modelo'],
-                sx={'display': 'flex', 'height': '100%','maxWidth': '70%'}
+                sx={'display': 'flex', 'height': '100%','maxWidth': '55%'}
         )
         with mui.CardContent(sx={'display': 'flex', 'flexDirection': 'column','alignItems': 'left','justifyContent': 'left','width': '100%'}):
             mui.Typography(product['modelo'],variant='h5')
@@ -61,6 +61,15 @@ def update_products():
     st.session_state.reload = True
 
 
+@st.cache_data(ttl=60)
+def search_products(s: str):
+    data = xata.search_on_table('Producto', {
+  "query": s,
+  "fuzziness": 2,
+  "prefix": "phrase",
+})
+    return data
+
 def handle_search():
     st.session_state.option = 'search'
 
@@ -74,10 +83,8 @@ def handle_save():
     st.session_state.save = True
     st.session_state.modalsave = True
 
-
 def update_corte(event):
     st.session_state.option = event.target.value
-
 
 def update_corte(event):
     st.session_state.corte = event.target.value
@@ -188,7 +195,7 @@ if st.session_state.imgtoast:
     st.session_state.imgtoast = False
 
 
-with elements('header'):
+with elements('headerProducts'):
     with mui.AppBar (position='static'):
         with mui.Toolbar():
             mui.icon.ShoppingCart()
@@ -223,13 +230,17 @@ with elements('header'):
 
 
 if st.session_state.option == 'search':
-    with elements('search'):
+    with elements('searchP'):
         with mui.Box(sx={'display': 'flex', 'flexDirection': 'row','alignItems': 'center'}):
             mui.icon.Search()
             mui.TextField(label='Buscar',variant='outlined',sx={'margin': '10px','fontSize': '2vw','width': '100%'})
             mui.Button(mui.icon.Close(),color='error',variant='text',onClick=handle_closesearch)
+        with mui.Box(sx={'display': 'flex', 'flexDirection': 'row','alignItems': 'right','justifyContent': 'flex-end','margin': '2.5rem'}):
+            mui.Button(mui.Typography('Buscar'),color='primary',onClick=sync())
+
+
 elif st.session_state.option == 'add':
-    with elements('add'):
+    with elements('addP'):
         with mui.Box(sx={'display': 'flex', 'flexDirection': 'row','alignItems': 'left','justifyContent': 'space-between'}):
             mui.Typography(mui.icon.DataSaverOn(),'Agregar Producto',variant='h6',sx={'margin': '10px','fontSize': '3vw','fontFamily': 'Bebas Neue'})
             mui.Button(mui.icon.Close(),color='error',variant='text',onClick=handle_closeadd)
