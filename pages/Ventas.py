@@ -79,3 +79,16 @@ with tabs[0]:
                 st.write('**Total:**',product['precio']*cantidad,"MXN")
                 if abono != -1:
                     st.write('**Restante:**',product['precio']*cantidad-abono,"MXN")
+
+    if product is not None:
+
+        with colsventas[1].popover('Vender Producto',help='Vender este producto',use_container_width=True):
+            st.write('**Detalle de la venta**')
+            st.write('Cantidad de productos vendidos:',cantidad)
+            st.write('Productos entregados:',entregados)
+            st.write('Productos restantes:',cantidad-entregados)
+            st.write('Total:',product['precio']*cantidad,"MXN")
+            st.write('Restante:',product['precio']*cantidad-abono,"MXN")
+            st.write('Fecha de entrega:',fechasa)
+            if st.button('Vender',on_click=lambda: st.toast('Producto vendido',icon='🎉')):
+                st.write('Producto vendido')
