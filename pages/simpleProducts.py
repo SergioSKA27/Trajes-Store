@@ -58,10 +58,7 @@ imgcols = st.columns([.6,.4])
 im = None
 with imgcols[1].popover('Imagen del producto', help='Sube una imagen del producto para mostrar en la tienda',use_container_width=True):
     image = st.file_uploader('Imagen del producto',type=['jpg','png','jpeg'])
-    if image is not None:
-        st.image(image.read(),use_column_width=True)
-        im = image.read()
-'Hi'
+
 st.image(image,use_column_width=True)
 if st.button('Guardar',use_container_width=True):
     if validate_product(clave,modelo,corte,existencia,precio):
@@ -86,7 +83,7 @@ if st.button('Guardar',use_container_width=True):
                 try:
                     resultimg = client.files().put('Producto',result['id'],'imagenProducto',image,content_type=image.type)
                     st.toast('Imagen Guardada',icon='🎉')
-                    st.write(resultimg)
+                    #st.write(resultimg)
                     time.sleep(5)
                     st.rerun()
                 except Exception as e:
