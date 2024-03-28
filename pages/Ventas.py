@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 from st_xatadb_connection import XataConnection,XataClient
 import asyncio
 import requests
@@ -76,7 +77,7 @@ def render_card(product,serach=False):
                 st.image(asyncio.run(get_random_image("600x600")),caption='Random Image')
 
 
-tabs = st.tabs(['Ventas individuales', 'Ventas por lote'])
+tabs = st.tabs(['Ventas individuales', 'Ventas por lote','Reporte de ventas'])
 
 
 with tabs[0]:
@@ -117,3 +118,20 @@ with tabs[0]:
             st.write('Fecha de entrega:',fechasa)
             if st.button('Vender',on_click=sell_product,args=(product,cantidad,entregados,fechasa,abono),use_container_width=True):
                 st.write('Producto vendido')
+
+
+
+with tabs[2]:
+    ventas_data = client.data().query("Venta", {
+    "columns": [
+        "cantidad",
+        "total",
+        "abono",
+        "entregado",
+        "completada",
+        "fechaSalida"
+    ]
+    })
+
+    df = pd.DataFrame(ventas_data['records'])
+    df
