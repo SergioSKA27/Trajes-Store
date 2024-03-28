@@ -101,9 +101,24 @@ if 'products_data' not in st.session_state:
 if 'page_products' not in st.session_state:
     st.session_state.page_products = 0
 
+tabs = st.tabs(['Productos','Buscar'])
 
+with tabs[0]:
+    _,rel = st.columns([.8,.2])
+    rel.button('Actualizar Productos',on_click=reload_data,use_container_width=True)
+    colspages = st.columns(3)
+    if st.session_state.page_products == -1:
+        lascols = st.columns([.4,.2,.4])
+        lascols[1].image('https://i.pinimg.com/originals/7b/08/64/7b0864456aab583193c7776d80a4c493.gif',caption='No hay mas productos',use_column_width=True)
 
-colspages = st.columns(3)
+    if st.button('Cargar mas productos',use_container_width=True,disabled=st.session_state.page_products == -1):
+        datas = xata.next_page('Producto',st.session_state.products_data[-1],9)
+        if datas:
+            st.session_state.products_data.append(datas)
+        else:
+            st.session_state.page_products = -1
+
+        st.rerun()
 
 k = 0
 
@@ -117,17 +132,6 @@ for chunk in st.session_state.products_data:
         if k == 3:
             k = 0
 
-if st.session_state.page_products == -1:
-    lascols = st.columns([.3,.4,.3])
-    lascols[1].image('https://i.pinimg.com/originals/e9/9c/27/e99c27d9fae3df5d2d2dc58dabaeaedb.gif',caption='No hay mas productos',use_column_width=True)
 
-if st.button('Cargar mas productos',use_container_width=True,disabled=st.session_state.page_products == -1):
-    datas = xata.next_page('Producto',st.session_state.products_data[-1],9)
-    if datas:
-        st.session_state.products_data.append(datas)
-    else:
-        st.session_state.page_products = -1
-
-    st.rerun()
 
 #st.image(asyncio.run(get_random_image("600x600")),caption='Random Image')
