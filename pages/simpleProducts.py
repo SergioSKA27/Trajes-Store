@@ -1,10 +1,11 @@
 import streamlit as st
-from st_xatadb_connection import XataConnection
+from st_xatadb_connection import XataConnection,XataClient
+import time
 
 
 st.set_page_config(page_title='Inventario',page_icon='🩱',layout='wide')
 xata = st.connection('xata',type=XataConnection)
-
+client =XataClient(api_key=st.secrets['XATA_API_KEY'],db_url=st.secrets['XATA_DB_URL'])
 
 def validate_product(clave,modelo,corte,existencia,precio):
     if clave == '':
@@ -23,6 +24,8 @@ def validate_product(clave,modelo,corte,existencia,precio):
         st.error('El precio del producto no puede ser 0')
         return False
     return True
+
+
 
 
 if 'upload' not in st.session_state:
@@ -51,8 +54,15 @@ with cols[1]:
 
     precio = st.number_input('Precio',min_value=0.0,step=0.01,format="%.2f",help='Precio del producto')
 
-
-
+imgcols = st.columns([.6,.4])
+im = None
+with imgcols[1].popover('Imagen del producto', help='Sube una imagen del producto para mostrar en la tienda',use_container_width=True):
+    image = st.file_uploader('Imagen del producto',type=['jpg','png','jpeg'])
+    if image is not None:
+        st.image(image.read(),use_column_width=True)
+        im = image.read()
+'Hi'
+st.image(image,use_column_width=True)
 if st.button('Guardar',use_container_width=True):
     if validate_product(clave,modelo,corte,existencia,precio):
         try:
@@ -70,25 +80,18 @@ if st.button('Guardar',use_container_width=True):
             st.error(f'Error al guardar el producto: {e}')
             st.stop()
 
-        imgcols = st.columns([.6,.4])
 
-        imgcols[0].write('Desearia agregar una imagen al producto?')
-        no = imgcols[1].button('No',use_container_width=True)
+        if image is not None:
+            with st.spinner('Guardando Imagen...'):
+                try:
+                    resultimg = client.files().put('Producto',result['id'],'imagenProducto',image,content_type=image.type)
+                    st.toast('Imagen Guardada',icon='🎉')
+                    st.write(resultimg)
+                    time.sleep(5)
+                    st.rerun()
+                except Exception as e:
+                    st.error(f'Error al guardar la imagen: {e}')
 
-        image = st.file_uploader('Imagen del producto',type=['jpg','png','jpeg'])
-
-        if st.button('Guardar Imagen'):
-            if image is not None:
-                with st.spinner('Guardando Imagen...'):
-                    try:
-                        resultimg = xata.upload_file('Producto',result['id'],'imagenProducto',image.read(),content_type=image.type)
-                        st.toast('Imagen Guardada',icon='🎉')
-                        st.rerun()
-                    except Exception as e:
-                        st.error(f'Error al guardar la imagen: {e}')
-                st.balloons()
-        elif no:
-            st.balloons()
 
 
     else:

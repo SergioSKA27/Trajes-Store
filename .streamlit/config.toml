@@ -4,3 +4,6 @@ backgroundColor="#e1e5f2"
 secondaryBackgroundColor="#bfdbf7"
 textColor="#000814"
 font="monospace"
+
+[server]
+enableXsrfProtection=false
