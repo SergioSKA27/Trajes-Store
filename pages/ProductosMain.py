@@ -94,14 +94,24 @@ def search_products(s: str):
 
 
 
-def update_product(product,nwproduct):
+def update_product(product,nwproduct,nimg):
     res = client.records().update("Producto",product['id'],nwproduct)
     print(res)
     if res.status_code != 200:
         st.toast('Error al actualizar el producto',icon='⚠️')
     else:
         st.toast('Producto actualizado',icon='🎉')
-        reload_data()
+        if nimg is None:
+            reload_data()
+
+    if nimg:
+        res = client.files().put("Producto",product['id'],'imagenProducto',nimg,content_type=nimg.type)
+        print(res)
+        if res.status_code != 200:
+            st.toast('Error al subir la imagen',icon='⚠️')
+        else:
+            st.toast('Imagen subida',icon='🎉')
+            reload_data()
 
 
 def del_product(productid=None):
@@ -138,9 +148,11 @@ def render_card(product,serach=False):
             ntalla = st.selectbox('Talla', [26, 28, 30, 32, 34, 36],index=[26, 28, 30, 32, 34, 36].index(product['talla']),help='Seleccione la talla del producto',key=f"talla_{product['id']}"+ad)
             nexistencia = st.number_input('Existencia',min_value=0,step=1,value=product['existencia'],help='Cantidad de productos en existencia',key=f"existencia_{product['id']}"+ad)
             nprecio = st.number_input('Precio',min_value=0.0,step=0.01,format="%.2f",value=float(product['precio']),help='Precio del producto',key=f"precio_{product['id']}"+ad)
+            imgn = st.file_uploader('Imagen del producto',type=['jpg','png','jpeg'],key=f"imagen_{product['id']}"+ad)
+
             if has_changed(product,nclave,nmodelo,ncorte,ngenero,ntalla,nexistencia,nprecio) and validate_product(nclave,nmodelo,ncorte,nexistencia,nprecio):
                 np = {'clave': nclave.upper(), 'modelo': nmodelo.upper(), 'corte': ncorte.upper(), 'genero': ngenero.upper(), 'talla': int(ntalla), 'existencia': int(nexistencia), 'precio': float(nprecio)}
-                if st.button('Guardar Cambios',key=f"save_{product['id']}"+ad,on_click=update_product,args=(product,np)):
+                if st.button('Guardar Cambios',key=f"save_{product['id']}"+ad,on_click=update_product,args=(product,np,imgn)):
                     st.rerun()
 
         with cols[0]:
