@@ -17,6 +17,31 @@ async def get_random_image(size):
 
 
 
+def sell_product(product,cantidad,entregados,fechasa,abono):
+    data = client.records().insert("Venta", {
+    "cantidad": cantidad,
+    "total": float(product['precio'])*float(cantidad),
+    "abono": float(abono) if abono != -1 else float(product['precio'])*float(cantidad),
+    "entregado": int(entregados),
+    "completada": entregados == cantidad and (abono == -1 or abono ==  float(product['precio'])*float(cantidad)),
+    "fechaSalida": fechasa.strftime("%Y-%m-%dT%H:%M:%SZ"),
+    "producto": product['id']
+    })
+
+    if data.status_code != 201:
+        st.toast('Error al vender el producto',icon='⚠️')
+    else:
+        st.toast('Producto vendido',icon='🎉')
+        if entregados == cantidad and (abono == -1 or abono ==  float(product['precio'])*float(cantidad)):
+            resp = client.records().update('Producto',product['id'],{
+                'existencia': product['existencia']-cantidad
+            })
+            if resp.status_code != 200:
+                st.toast('Error al actualizar la existencia del producto',icon='⚠️')
+            else:
+                st.toast('Existencia actualizada',icon='🎉')
+
+
 @st.cache_data(ttl=60)
 def search_products(s: str):
     data = xata.search_on_table('Producto', {
@@ -90,5 +115,5 @@ with tabs[0]:
             st.write('Total:',product['precio']*cantidad,"MXN")
             st.write('Restante:',product['precio']*cantidad-abono,"MXN")
             st.write('Fecha de entrega:',fechasa)
-            if st.button('Vender',on_click=lambda: st.toast('Producto vendido',icon='🎉')):
+            if st.button('Vender',on_click=sell_product,args=(product,cantidad,entregados,fechasa,abono),use_container_width=True):
                 st.write('Producto vendido')
