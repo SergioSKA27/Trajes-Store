@@ -10,10 +10,27 @@ st.set_page_config(page_title='Inventario',page_icon='🩱',layout='wide')
 xata = st.connection('xata',type=XataConnection)
 client =XataClient(api_key=st.secrets['XATA_API_KEY'],db_url=st.secrets['XATA_DB_URL'])
 
+st.markdown("""
+<style>
+#MainMenu, header, footer {visibility: hidden;}
+.appview-container .main .block-container
+{
+    padding-top: 0px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+</style>
+""",unsafe_allow_html=True)
+
+
 
 async def get_random_image(size):
-    data = await asyncio.to_thread(requests.get, f'https://source.unsplash.com/{size}/?swimsuit')
-    return data.content
+    try:
+        data = await asyncio.to_thread(requests.get, f'https://source.unsplash.com/{size}/?swimsuit',timeout=1)
+        return data.content
+    except:
+        return f'https://source.unsplash.com/{size}/?swimsuit'
 
 
 def validate_product(clave,modelo,corte,existencia,precio):
@@ -55,12 +72,24 @@ def reload_data():
     st.session_state.products_data = [xata.query("Producto",{'page': {'size': 9 }})]
     st.session_state.page_products = 0
 
+
+@st.cache_data(ttl=60)
+def search_products(s: str):
+    data = xata.search_on_table('Producto', {
+  "query": s,
+  "fuzziness": 2,
+  "prefix": "phrase",
+})
+    return data['records']
+
+
 @st.cache_resource(experimental_allow_widgets=True)
-def render_card(product):
+def render_card(product,serach=False):
 
 
     with st.container(border=True):
         cols = st.columns([.6,.4])
+        ad = '' if serach else '_search'
         with cols[1]:
             st.write('**Clave:** ',product['clave'])
             st.write('**Modelo:** ',product['modelo'])
@@ -72,15 +101,15 @@ def render_card(product):
 
 
         with cols[1].popover('Editar Producto',help='Editar este producto',use_container_width=True):
-            nclave = st.text_input('Clave',value=product['clave'],help='La clave del producto es unica',key=f"clave_{product['id']}")
-            nmodelo = st.text_input('Modelo',value=product['modelo'],help='Distintas claves pueden tener el mismo modelo',key=f"modelo_{product['id']}")
-            ncorte = st.text_input('Corte',value=product['corte'],key=f"corte_{product['id']}")
-            ngenero = st.selectbox('Genero', ['Hombre', 'Mujer', 'Niño', 'Niña','M','H'],index=['Hombre', 'Mujer', 'Niño', 'Niña','M','H'].index(product['genero'].capitalize()),help='Seleccione el genero del producto',key=f"genero_{product['id']}")
-            ntalla = st.selectbox('Talla', [26, 28, 30, 32, 34, 36],index=[26, 28, 30, 32, 34, 36].index(product['talla']),help='Seleccione la talla del producto',key=f"talla_{product['id']}")
-            nexistencia = st.number_input('Existencia',min_value=0,step=1,value=product['existencia'],help='Cantidad de productos en existencia',key=f"existencia_{product['id']}")
-            nprecio = st.number_input('Precio',min_value=0.0,step=0.01,format="%.2f",value=float(product['precio']),help='Precio del producto',key=f"precio_{product['id']}")
+            nclave = st.text_input('Clave',value=product['clave'],help='La clave del producto es unica',key=f"clave_{product['id']}"+ad)
+            nmodelo = st.text_input('Modelo',value=product['modelo'],help='Distintas claves pueden tener el mismo modelo',key=f"modelo_{product['id']}"+ad)
+            ncorte = st.text_input('Corte',value=product['corte'],key=f"corte_{product['id']}"+ad)
+            ngenero = st.selectbox('Genero', ['Hombre', 'Mujer', 'Niño', 'Niña','M','H'],index=['Hombre', 'Mujer', 'Niño', 'Niña','M','H'].index(product['genero'].capitalize()),help='Seleccione el genero del producto',key=f"genero_{product['id']}"+ad)
+            ntalla = st.selectbox('Talla', [26, 28, 30, 32, 34, 36],index=[26, 28, 30, 32, 34, 36].index(product['talla']),help='Seleccione la talla del producto',key=f"talla_{product['id']}"+ad)
+            nexistencia = st.number_input('Existencia',min_value=0,step=1,value=product['existencia'],help='Cantidad de productos en existencia',key=f"existencia_{product['id']}"+ad)
+            nprecio = st.number_input('Precio',min_value=0.0,step=0.01,format="%.2f",value=float(product['precio']),help='Precio del producto',key=f"precio_{product['id']}"+ad)
             if has_changed(product,nclave,nmodelo,ncorte,ngenero,ntalla,nexistencia,nprecio) and validate_product(nclave,nmodelo,ncorte,nexistencia,nprecio):
-                if st.button('Guardar Cambios',key=f"save_{product['id']}"):
+                if st.button('Guardar Cambios',key=f"save_{product['id']}"+ad):
                     pass
         with cols[0]:
             if 'imagenProducto' in product and 'url' in product['imagenProducto']:
@@ -89,7 +118,7 @@ def render_card(product):
                 st.image(asyncio.run(get_random_image("600x600")),caption='Random Image')
 
         with cols[0].popover('Eliminar Producto',help='Eliminar este producto de la base de datos',use_container_width=True):
-            if st.button(':red[Eliminar Producto]',key=f"delete_{product['id']}"):
+            if st.button(':red[Eliminar Producto]',key=f"delete_{product['id']}"+ad):
                 st.write('¿Esta seguro de eliminar el producto? este cambio no se puede deshacer')
                 st.button('Si, eliminar')
 
@@ -100,6 +129,9 @@ if 'products_data' not in st.session_state:
 
 if 'page_products' not in st.session_state:
     st.session_state.page_products = 0
+
+if 'search' not in st.session_state:
+    st.session_state.search = []
 
 tabs = st.tabs(['Productos','Buscar'])
 
@@ -121,6 +153,22 @@ with tabs[0]:
         st.rerun()
 
 k = 0
+k2 = 0
+
+with tabs[1]:
+    srch = st.text_input('Buscar Producto',help='Busca un producto por clave o modelo')
+    if st.button('Buscar',use_container_width=True):
+        st.session_state.search = search_products(srch)
+    scols = st.columns(3)
+
+
+for i in st.session_state.search:
+    with scols[k2]:
+        render_card(i,True)
+    k2 += 1
+    if k2 == 3:
+        k2 = 0
+
 
 for chunk in st.session_state.products_data:
     dchunk = chunk['records']

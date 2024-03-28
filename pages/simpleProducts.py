@@ -59,7 +59,9 @@ im = None
 with imgcols[1].popover('Imagen del producto', help='Sube una imagen del producto para mostrar en la tienda',use_container_width=True):
     image = st.file_uploader('Imagen del producto',type=['jpg','png','jpeg'])
 
-st.image(image,use_column_width=True)
+if image is not None:
+    st.image(image)
+
 if st.button('Guardar',use_container_width=True):
     if validate_product(clave,modelo,corte,existencia,precio):
         try:
