@@ -124,7 +124,6 @@ def del_product(productid=None):
 @st.cache_resource(experimental_allow_widgets=True)
 def render_card(product,serach=False):
 
-
     with st.container(border=True):
         cols = st.columns([.6,.4])
         ad = '' if serach else '_search'
