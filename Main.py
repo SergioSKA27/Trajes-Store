@@ -39,7 +39,9 @@ if 'menu_selected' not in st.session_state:
 if 'bannerquery' not in st.session_state:
     st.session_state.bannerquery = xata.query('Producto',{'columns':['id','imagenProducto.url'], 'page':{ 'size': 5}})
 
-
+if 'welcome' not in st.session_state:
+    st.session_state.welcome = True
+    st.toast('Bienvenido al gestor de inventario',icon='🔥')
 
 # Invetory Dashboard
 
@@ -127,3 +129,6 @@ def banner():
 
 
 banner()
+
+st.caption('Si las imagenes no se muestran, recargue la pagina o espere unos segundos para que se carguen las imagenes de la galeria.')
+st.caption('Si el problema persiste, contacte al administrador del sistema.')
