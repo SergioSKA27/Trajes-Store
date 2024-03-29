@@ -181,7 +181,7 @@ navcols[0].subheader('🩱Gestion de Productos')
 navcols[4].page_link('Main.py',label='Inicio',icon='🏠',help='Regresa a la pagina principal',use_container_width=True)
 navcols[1].page_link('pages/simpleProducts.py',label='Agregar Producto',icon='➕',help='Agrega un producto al inventario',use_container_width=True)
 navcols[2].page_link('pages/Ventas.py',label='Ventas',icon='💰',help='Registra las ventas de productos en la tienda',use_container_width=True)
-navcols[3].page_link('pages/Ventas.py',label='Pedidos',icon='🚚',help='Revise los pedidos pendientes y entregados de la tienda',use_container_width=True)
+navcols[3].page_link('pages/pedidos.py',label='Pedidos',icon='🚚',help='Revise los pedidos pendientes y entregados de la tienda',use_container_width=True)
 
 
 
