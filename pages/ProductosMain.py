@@ -25,7 +25,7 @@ st.markdown("""
 
 async def get_random_image(size):
     try:
-        data = await asyncio.to_thread(requests.get, f'https://source.unsplash.com/{size}/?swimsuit',timeout=1)
+        data = await asyncio.to_thread(requests.get, f'https://source.unsplash.com/{size}/?swimsuit',timeout=3)
         return data.content
     except:
         return f'https://source.unsplash.com/{size}/?swimsuit'
