@@ -13,9 +13,9 @@ st.markdown("""
 #MainMenu, header, footer {visibility: hidden;}
 .appview-container .main .block-container
 {
-    padding-top: 0px;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    padding-top: 0.5px;
+    padding-left: 1rem;
+    padding-right: 1rem;
     padding-bottom: 0.5rem;
 }
 </style>
@@ -174,6 +174,16 @@ if 'page_products' not in st.session_state:
 
 if 'search' not in st.session_state:
     st.session_state.search = []
+
+
+navcols = st.columns([0.5,0.2,0.1,0.1,0.1])
+navcols[0].subheader('🩱Gestion de Productos')
+navcols[4].page_link('Main.py',label='Inicio',icon='🏠',help='Regresa a la pagina principal',use_container_width=True)
+navcols[1].page_link('pages/simpleProducts.py',label='Agregar Producto',icon='➕',help='Agrega un producto al inventario',use_container_width=True)
+navcols[2].page_link('pages/Ventas.py',label='Ventas',icon='💰',help='Registra las ventas de productos en la tienda',use_container_width=True)
+navcols[3].page_link('pages/Ventas.py',label='Pedidos',icon='🚚',help='Revise los pedidos pendientes y entregados de la tienda',use_container_width=True)
+
+
 
 tabs = st.tabs(['Productos','Buscar'])
 

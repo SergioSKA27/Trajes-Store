@@ -10,13 +10,18 @@ st.set_page_config(page_title='Inventario',page_icon='🩱',layout='wide',initia
 # Create a connection to the XataDB
 xata = st.connection('xata',type=XataConnection)
 
-st.markdown('''
+st.markdown("""
 <style>
-[data-testid="collapsedControl"] {
-        display: none
-    }
+#MainMenu, header, footer {visibility: hidden;}
+.appview-container .main .block-container
+{
+    padding-top: 0.5px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 0.5rem;
+}
 </style>
-''',unsafe_allow_html=True)
+""",unsafe_allow_html=True)
 
 
 async def get_random_image(size):
