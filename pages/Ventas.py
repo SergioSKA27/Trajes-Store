@@ -130,7 +130,7 @@ if 'order' not in st.session_state:
     st.session_state.order = []
 
 navcols = st.columns([0.4,0.2,0.2,0.1,0.1])
-navcols[0].title('Ventas')
+navcols[0].title('💰Ventas')
 navcols[2].page_link('pages/ProductosMain.py',label='Gestion de Productos',icon='🩱',help='Modifica, elimina y busca productos en el inventario',use_container_width=True)
 navcols[4].page_link('Main.py',label='Inicio',icon='🏠',help='Regresa a la pagina principal',use_container_width=True)
 navcols[3].page_link('pages/pedidos.py',label='Pedidos',icon='🚚',help='Revise los pedidos pendientes y entregados de la tienda',use_container_width=True)
